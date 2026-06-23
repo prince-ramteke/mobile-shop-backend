@@ -29,10 +29,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String path = request.getServletPath();
 
         // 🔥 Skip JWT filter for login & public endpoints
-        if (path.startsWith("/api/auth")) {
+        String path = request.getServletPath();
+
+// Skip JWT filter for public endpoints + Swagger
+        if (path.startsWith("/api/auth")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.equals("/swagger-ui.html")
+                || path.equals("/favicon.ico")) {
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -61,8 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails =
                     userDetailsService.loadUserByUsername(username);
 
-            if (!jwtUtil.isTokenExpired(token)) {
-
+            if (jwtUtil.validateToken(token, userDetails.getUsername())) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,

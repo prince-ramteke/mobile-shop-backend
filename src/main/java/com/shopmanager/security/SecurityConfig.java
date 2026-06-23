@@ -1,5 +1,9 @@
 package com.shopmanager.security;
+import java.util.List;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,7 +61,6 @@ public class SecurityConfig {
                         // ✅ PUBLIC LOGIN (VERY IMPORTANT)
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/repairs/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/repairs/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/repairs/**").authenticated()
                         .requestMatchers("/api/customers/**").authenticated()
@@ -66,26 +69,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/mobile-sales/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/mobile-sales/**").authenticated()
 
-                        .requestMatchers(
-                                "/",
-                                "/index.html",
-                                "/favicon.ico",
-                                "/assets/**",
-                                "/static/**",
-                                "/*.js",
-                                "/*.css",
-                                "/api/auth/**"
-                        ).permitAll()
-
-
-
 
                         // Swagger / API Docs
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
                         // Dev / H2
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
 
 
                         // 🔒 All other APIs need login
@@ -103,5 +92,38 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(
+                List.of(
+                        "http://localhost:5173"
+                )
+        );
+
+        configuration.setAllowedMethods(
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "OPTIONS"
+                )
+        );
+
+        configuration.setAllowedHeaders(List.of("*"));
+
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }
