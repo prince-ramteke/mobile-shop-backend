@@ -95,6 +95,7 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(
                 List.of(
+                        "http://localhost:3000",
                         "http://localhost:5173",
                         "https://mobile-shop-backend-production.up.railway.app"
                 )
