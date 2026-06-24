@@ -23,7 +23,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN','STAFF')")
 public class DashboardController {
 
     private final DashboardService dashboardService;
