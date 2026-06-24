@@ -95,7 +95,8 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(
                 List.of(
-                        "http://localhost:5173"
+                        "http://localhost:5173",
+                        "https://mobile-shop-backend-production.up.railway.app"
                 )
         );
 
@@ -111,8 +112,7 @@ public class SecurityConfig {
 
         configuration.setAllowedHeaders(List.of("*"));
 
-        configuration.setAllowCredentials(true);
-
+        configuration.setAllowCredentials(false);
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
