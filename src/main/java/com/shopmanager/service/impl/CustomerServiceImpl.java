@@ -2,7 +2,7 @@ package com.shopmanager.service.impl;
 
 import com.shopmanager.entity.Customer;
 import com.shopmanager.exception.ResourceNotFoundException;
-
+import java.util.List;
 import com.shopmanager.dto.customer.CustomerRequest;
 import com.shopmanager.dto.customer.CustomerResponse;
 import com.shopmanager.entity.Customer;
@@ -160,6 +160,31 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer getEntityById(Long id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+    }
+
+    @Override
+    public List<CustomerResponse> getAllCustomers() {
+
+        return customerRepository.findAll()
+                .stream()
+                .map(customer -> {
+
+                    CustomerResponse res = customerMapper.toResponse(customer);
+
+                    BigDecimal saleDue =
+                            saleRepository.sumPendingByCustomerId(customer.getId());
+
+                    BigDecimal repairDue =
+                            repairJobRepository.sumPendingByCustomerId(customer.getId());
+
+                    if (saleDue == null) saleDue = BigDecimal.ZERO;
+                    if (repairDue == null) repairDue = BigDecimal.ZERO;
+
+                    res.setDueAmount(saleDue.add(repairDue));
+
+                    return res;
+                })
+                .toList();
     }
 
 }
