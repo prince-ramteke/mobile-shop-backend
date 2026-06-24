@@ -58,27 +58,21 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // ✅ PUBLIC LOGIN (VERY IMPORTANT)
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/repairs/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/repairs/**").authenticated()
-                        .requestMatchers("/api/customers/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/mobile-sales/**").authenticated()
-                        // Mobile Sales
-                        .requestMatchers(HttpMethod.POST, "/api/mobile-sales/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/mobile-sales/**").authenticated()
+                        // Swagger
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
 
+                        // Allow ALL APIs temporarily
+                        .requestMatchers("/api/**").permitAll()
 
-                        // Swagger / API Docs
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-
-                        // Dev / H2
+                        // H2 Console
                         .requestMatchers("/h2-console/**").permitAll()
 
-
-                        // 🔒 All other APIs need login
-                        .anyRequest().authenticated()
+                        // Everything else
+                        .anyRequest().permitAll()
                 )
 
                 // ❌ Disable default Spring login UI
