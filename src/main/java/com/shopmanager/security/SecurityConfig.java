@@ -97,7 +97,8 @@ public class SecurityConfig {
                 List.of(
                         "http://localhost:3000",
                         "http://localhost:5173",
-                        "https://mobile-shop-backend-production.up.railway.app"
+                        "https://mobile-shop-backend-production.up.railway.app",
+                        "https://saurabh-mobile-frontend.vercel.app"
                 )
         );
 
