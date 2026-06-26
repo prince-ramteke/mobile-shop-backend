@@ -15,18 +15,7 @@ public class SettingsProvider {
         return repository.findAll()
                 .stream()
                 .findFirst()
-                .orElseGet(() -> repository.save(
-                        ShopSettings.builder()
-                                .shopName("Saurabh Mobile Shop")
-                                .shopPhone("")
-                                .shopAddress("")
-                                .gstNumber("")
-                                .invoiceFooter("Thank you for your business!")
-                                .whatsappEnabled(true)
-                                .reminderGapDays(3)
-                                .gstPercentage(18.0)
-                                .build()
-                ));
+                .orElseThrow(() -> new RuntimeException("Shop settings not configured"));
     }
 
     public Double getGstPercentage() {
