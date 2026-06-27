@@ -1,8 +1,10 @@
 package com.shopmanager.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -32,43 +35,41 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(error);
     }
 
-    // 1. Resource Not Found
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiError> handleNotFound(
             ResourceNotFoundException ex,
             HttpServletRequest req) {
-
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), req);
     }
 
-    // 2. Bad Request
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ApiError> handleBadRequest(
             BadRequestException ex,
             HttpServletRequest req) {
-
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
     }
 
-    // 3. Duplicate Entry
     @ExceptionHandler(DuplicateEntryException.class)
     public ResponseEntity<ApiError> handleDuplicate(
             DuplicateEntryException ex,
             HttpServletRequest req) {
-
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), req);
     }
 
-    // 4. Unauthorized Access
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ApiError> handleUnauthorized(
             UnauthorizedException ex,
             HttpServletRequest req) {
-
         return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), req);
     }
 
-    // 5. Bean Validation Errors
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDenied(
+            AccessDeniedException ex,
+            HttpServletRequest req) {
+        return buildResponse(HttpStatus.FORBIDDEN, "Access denied", req);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(
             MethodArgumentNotValidException ex,
@@ -91,29 +92,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
-    // 6. Handle missing resources (favicon, static files, etc.)
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ApiError> handleNoResource(
             NoResourceFoundException ex,
             HttpServletRequest req) {
-
-        return buildResponse(
-                HttpStatus.NOT_FOUND,
-                "Resource not found",
-                req);
+        return buildResponse(HttpStatus.NOT_FOUND, "Resource not found", req);
     }
 
-    // 7. Generic Exception (MUST BE LAST)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneralException(
             Exception ex,
             HttpServletRequest req) {
 
-        ex.printStackTrace();
+        log.error("Unhandled exception on {}: {}", req.getRequestURI(), ex.getMessage(), ex);
 
         return buildResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Something went wrong!",
+                ex.getClass().getSimpleName() + ": " + ex.getMessage(),
                 req);
     }
 }
