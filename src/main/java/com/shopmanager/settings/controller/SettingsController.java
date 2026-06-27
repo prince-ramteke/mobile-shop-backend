@@ -23,7 +23,7 @@ public class SettingsController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ShopSettingsResponse> updateSettings(
             @Valid @RequestBody ShopSettingsRequest request
     ) {
