@@ -1,36 +1,32 @@
-package com.shopmanager.controller;
 
+package com.shopmanager.settings.controller;
 import com.shopmanager.settings.dto.ShopSettingsRequest;
 import com.shopmanager.settings.dto.ShopSettingsResponse;
 import com.shopmanager.settings.service.ShopSettingsService;
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-
-/**
- * Settings Controller - Manages shop configuration settings
- */
 @RestController
 @RequestMapping("/api/settings")
 @RequiredArgsConstructor
 public class SettingsController {
 
-    private final ShopSettingsService settingsService;
+    private final ShopSettingsService shopSettingsService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ShopSettingsResponse> getSettings() {
-        return ResponseEntity.ok(settingsService.getSettings());
+        return ResponseEntity.ok(shopSettingsService.getSettings());
     }
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ShopSettingsResponse> updateSettings(
-            @Valid @RequestBody ShopSettingsRequest request) {
-        return ResponseEntity.ok(settingsService.updateSettings(request));
+            @Valid @RequestBody ShopSettingsRequest request
+    ) {
+        return ResponseEntity.ok(shopSettingsService.updateSettings(request));
     }
 }
