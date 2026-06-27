@@ -1,5 +1,5 @@
-
 package com.shopmanager.settings.controller;
+
 import com.shopmanager.settings.dto.ShopSettingsRequest;
 import com.shopmanager.settings.dto.ShopSettingsResponse;
 import com.shopmanager.settings.service.ShopSettingsService;
@@ -17,13 +17,13 @@ public class SettingsController {
     private final ShopSettingsService shopSettingsService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_STAFF')")
     public ResponseEntity<ShopSettingsResponse> getSettings() {
         return ResponseEntity.ok(shopSettingsService.getSettings());
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ShopSettingsResponse> updateSettings(
             @Valid @RequestBody ShopSettingsRequest request
     ) {
