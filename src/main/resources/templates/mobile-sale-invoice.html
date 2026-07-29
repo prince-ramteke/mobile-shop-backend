@@ -61,10 +61,10 @@ Expiry: <span th:text="${#temporals.format(warrantyExpiry, 'dd-MM-yyyy')}"></spa
 
     <h3>EMI Details</h3>
 
+    <!-- Customer-facing invoice: internal EMI breakdown (interest rate,
+         processing fee, interest amount) is intentionally hidden here.
+         Those are still shown on the shop's own Mobile Sale detail page. -->
     <p><strong>Months:</strong> <span th:text="${emiMonths}"></span></p>
-    <p><strong>Interest Rate:</strong> <span th:text="${emiInterestRate}"></span>%</p>
-    <p><strong>Processing Fee:</strong> ₹<span th:text="${emiProcessingFee}"></span></p>
-    <p><strong>Interest Amount:</strong> ₹<span th:text="${emiInterestAmount}"></span></p>
     <p><strong>Total Payable:</strong> ₹<span th:text="${emiTotalPayable}"></span></p>
     <p><strong>Monthly EMI:</strong> ₹<span th:text="${emiMonthlyAmount}"></span></p>
 
