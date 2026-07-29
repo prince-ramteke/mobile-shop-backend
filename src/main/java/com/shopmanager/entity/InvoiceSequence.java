@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(
-        name = "invoice_sequences",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"year"})
-)
+@Table(name = "invoice_sequences")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,7 +16,10 @@ public class InvoiceSequence {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    // "year" is a reserved word in H2 (and some other DBs); quote it so the
+    // generated SQL is portable. The physical column name stays `year`, so this
+    // is a no-op migration on the existing MySQL schema.
+    @Column(name = "`year`", nullable = false, unique = true)
     private Integer year;
 
     @Column(nullable = false)

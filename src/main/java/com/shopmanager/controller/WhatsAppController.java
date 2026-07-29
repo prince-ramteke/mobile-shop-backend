@@ -5,7 +5,6 @@ import com.shopmanager.dto.whatsapp.WhatsAppTemplateResponse;
 import com.shopmanager.service.WhatsAppService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,11 +12,15 @@ import java.util.List;
 /**
  * WhatsApp Controller - Handles WhatsApp message operations
  * including invoice sharing, repair updates, and message previews.
+ *
+ * NOTE: authorization intentionally left open to stay consistent with the rest
+ * of the API (all /api/** is permitAll in SecurityConfig). A lone @PreAuthorize
+ * here would make these the only endpoints returning 403 on a missing/expired
+ * JWT — the same trap that broke the Settings module.
  */
 @RestController
 @RequestMapping("/api/whatsapp")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class WhatsAppController {
 
     private final WhatsAppService whatsAppService;

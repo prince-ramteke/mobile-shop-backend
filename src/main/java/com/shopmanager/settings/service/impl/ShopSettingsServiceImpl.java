@@ -41,6 +41,7 @@ public class ShopSettingsServiceImpl implements ShopSettingsService {
         settings.setShopPhone(req.getShopPhone());
         settings.setShopAddress(req.getShopAddress());
         settings.setGstNumber(req.getGstNumber());
+        settings.setEmail(req.getEmail());
         settings.setInvoiceFooter(req.getInvoiceFooter());
 
         if (req.getGstPercentage() != null)
@@ -78,6 +79,7 @@ public class ShopSettingsServiceImpl implements ShopSettingsService {
                 .shopPhone(s.getShopPhone())
                 .shopAddress(s.getShopAddress())
                 .gstNumber(s.getGstNumber())
+                .email(s.getEmail())
                 .invoiceFooter(s.getInvoiceFooter())
                 .whatsappEnabled(s.getWhatsappEnabled())
                 .reminderGapDays(s.getReminderGapDays())

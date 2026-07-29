@@ -152,11 +152,12 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- In-memory H2 DB for tests only -->
+		<!-- In-memory H2 DB: used by tests and the 'local' dev profile.
+		     Inert in production, which runs the default profile against MySQL. -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>test</scope>
+			<scope>runtime</scope>
 		</dependency>
 
 	</dependencies>

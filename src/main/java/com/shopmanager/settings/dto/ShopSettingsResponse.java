@@ -13,6 +13,7 @@ public class ShopSettingsResponse {
     private String shopPhone;
     private String shopAddress;
     private String gstNumber;
+    private String email;
     private String invoiceFooter;
 
     private Boolean whatsappEnabled;

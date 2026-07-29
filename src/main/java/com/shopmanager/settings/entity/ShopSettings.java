@@ -22,6 +22,7 @@ public class ShopSettings {
     private String shopPhone;
     private String shopAddress;
     private String gstNumber;
+    private String email;
 
     // ---- Invoice ----
     private String invoiceFooter;

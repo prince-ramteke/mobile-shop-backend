@@ -14,6 +14,7 @@ public class ShopSettingsRequest {
     private String shopPhone;
     private String shopAddress;
     private String gstNumber;
+    private String email;
     private String invoiceFooter;
     @NotNull
     @Min(0)
