@@ -76,7 +76,7 @@
 </div>
 <div class="section">
     <h3>Sales Trend Graph</h3>
-    <img th:src="${chartImage}" width="600"/>
+    <img th:if="${chartImage != null}" th:src="${chartImage}" width="600"/>
 </div>
 </body>
 </html>

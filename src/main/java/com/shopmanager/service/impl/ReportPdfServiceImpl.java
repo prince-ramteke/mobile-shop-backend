@@ -40,14 +40,11 @@ public class ReportPdfServiceImpl implements ReportPdfService {
         MonthlyReportDto report =
                 reportService.getMonthlyReport(year, month);
 
-        String chartBase64 =
-                com.shopmanager.util.ChartGenerator
-                        .generateMonthlyRevenueChart(report);
-
+        // Chart image (JFreeChart) removed to save memory on the free tier.
         Context context = new Context();
         context.setVariable("report", report);
         context.setVariable("generatedAt", LocalDateTime.now());
-        context.setVariable("chartImage", chartBase64);
+        context.setVariable("chartImage", null);
 
         String html = templateEngine.process("monthly-report", context);
         return generatePdfFromHtml(html);
