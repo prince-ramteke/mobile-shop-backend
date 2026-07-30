@@ -8,6 +8,8 @@ import com.shopmanager.repository.MobileSaleRepository;
 import com.shopmanager.repository.RepairJobRepository;
 import com.shopmanager.repository.SaleRepository;
 import com.shopmanager.service.PdfService;
+import com.shopmanager.settings.entity.ShopSettings;
+import com.shopmanager.settings.service.SettingsProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,24 @@ public class PdfServiceImpl implements PdfService {
     private final SaleRepository saleRepository;
     private final RepairJobRepository repairJobRepository;
     private final SpringTemplateEngine templateEngine;
+    private final SettingsProvider settingsProvider;
+
+    /** Fills shopName/shopAddress/shopPhone into the template from Settings. */
+    private void applyShopInfo(Context ctx) {
+        ShopSettings shop = settingsProvider.getSettings();
+        ctx.setVariable("shopName", nz(shop.getShopName(), "Saurabh Mobile Shop"));
+        ctx.setVariable("shopAddress", nz(shop.getShopAddress(), ""));
+        ctx.setVariable("shopPhone", nz(shop.getShopPhone(), ""));
+        ctx.setVariable("gstNumber", gstLabel(shop.getGstNumber()));
+    }
+
+    private static String nz(String v, String def) {
+        return (v != null && !v.isBlank()) ? v : def;
+    }
+
+    private static String gstLabel(String g) {
+        return (g != null && !g.isBlank()) ? "GSTIN: " + g : "";
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -39,10 +59,8 @@ public class PdfServiceImpl implements PdfService {
 
         Context ctx = new Context();
 
-        // Shop Info
-        ctx.setVariable("shopName", "Saurabh Mobile Shop");
-        ctx.setVariable("shopAddress", "Main Road, City");
-        ctx.setVariable("shopPhone", "+91 9876543210");
+        // Shop Info (from Settings)
+        applyShopInfo(ctx);
         ctx.setVariable("paymentMode", "CASH");
 
         // Sale Info
@@ -109,11 +127,8 @@ public class PdfServiceImpl implements PdfService {
 
         Context ctx = new Context();
 
-        // Shop info
-        ctx.setVariable("shopName", "Saurabh Mobile Shop");
-        ctx.setVariable("shopAddress", "Main Road, City, State");
-        ctx.setVariable("shopPhone", "+91 9876543210");
-        ctx.setVariable("gstNumber", "GSTIN: 12ABCDE3456F7Z8");
+        // Shop info (from Settings)
+        applyShopInfo(ctx);
 
         // Sale info
         ctx.setVariable("invoiceNumber", sale.getInvoiceNumber());
@@ -153,8 +168,7 @@ public class PdfServiceImpl implements PdfService {
 
         Context ctx = new Context();
         ctx.setVariable("job", job);
-        ctx.setVariable("shopName", "Saurabh Mobile Shop");
-        ctx.setVariable("shopPhone", "+91 9876543210");
+        applyShopInfo(ctx);
 
         String html = templateEngine.process("repair_receipt", ctx);
 

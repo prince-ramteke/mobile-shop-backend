@@ -3,6 +3,8 @@ package com.shopmanager.service.impl;
 import com.shopmanager.entity.RepairJob;
 import com.shopmanager.repository.RepairPaymentRepository;
 import com.shopmanager.service.RepairInvoiceService;
+import com.shopmanager.settings.entity.ShopSettings;
+import com.shopmanager.settings.service.SettingsProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -21,17 +23,26 @@ public class RepairInvoiceServiceImpl implements RepairInvoiceService {
 
     private final TemplateEngine templateEngine;
 
+    private final SettingsProvider settingsProvider;
+
     @Override
     public byte[] generateRepairInvoicePdf(RepairJob job) {
 
         try {
             Context context = new Context();
 
-            // Shop Info (same as sale)
-            context.setVariable("shopName", "Saurabh Mobile Shop");
-            context.setVariable("shopAddress", "Your Shop Address");
-            context.setVariable("shopPhone", "Your Phone");
-            context.setVariable("gstNumber", "-");
+            // Shop Info (from Settings)
+            ShopSettings shop = settingsProvider.getSettings();
+            context.setVariable("shopName",
+                    (shop.getShopName() != null && !shop.getShopName().isBlank())
+                            ? shop.getShopName() : "Saurabh Mobile Shop");
+            context.setVariable("shopAddress",
+                    shop.getShopAddress() != null ? shop.getShopAddress() : "");
+            context.setVariable("shopPhone",
+                    shop.getShopPhone() != null ? shop.getShopPhone() : "");
+            context.setVariable("gstNumber",
+                    (shop.getGstNumber() != null && !shop.getGstNumber().isBlank())
+                            ? "GSTIN: " + shop.getGstNumber() : "");
 
             context.setVariable("invoiceNumber", job.getJobNumber());
             context.setVariable("date",
